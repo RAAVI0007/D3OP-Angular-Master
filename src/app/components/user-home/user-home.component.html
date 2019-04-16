@@ -1,0 +1,562 @@
+<app-session-timeout></app-session-timeout>
+<app-nav-bar
+	[userName]="userName">
+</app-nav-bar>
+
+<div id="wrapper" style="margin-top:70px">
+	<div class="alert alert-success alert-dismissible fade in centered" *ngIf="message == 'block'" [ngStyle]="{'display': message}">
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		Engagement created successfully.
+	</div>
+	<div class="alert alert-success alert-dismissible fade in centered" *ngIf="messageProfileUpdated == 'block'" [ngStyle]="{'display': messageProfileUpdated}">
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		Changes updated.
+	</div>
+	<div class="alert alert-info alert-dismissible" style="text-align:center" *ngIf="features?.oldBenchmarkLink == true && oldBmMessageDisplayed == 'no'" >
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+				If you experience any difficulties in new Benchmark, try switching to old Benchmark by clicking the link in the user menu.
+	</div>
+	<div id="breadcrumb-container" class="container" >
+		<app-breadcrumb 
+			[userHome]="userHome"
+			[legendsLink]="legendsLink">
+		</app-breadcrumb>
+	</div><br>
+	<div id="main-container" class="container">
+		<div class="panel-group">
+			<div class="panel panel-default" style="height: auto;">
+				<div class="panel-heading">
+					<div class="row">
+						<div class="col-md-12">
+							<h4 class="panel-title" style="padding: 5px;">
+								Create Engagement
+								<a data-toggle="modal" data-target="#createEngagement" (click)="defaults()">
+									<span style="vertical-align:middle;cursor:pointer;">
+										<i class="fa fa-plus-circle" title="Create new engagement"></i>
+									</span>
+								</a>
+							</h4>
+						</div>
+					</div>
+				</div>
+				<div id="collapse1" class="panel-collapse collapse in">
+					<div class="panel-body">
+						<div class="table-responsive" style="padding:0" *ngIf="engagements?.length>0; else tableWithNoEng">
+							<table class="table table-bordered table-fixed table-engagements" 
+								style="text-align:center; width:100%; table-layout:fixed;">
+								<thead>
+									<tr>
+										<th>Engagement Name</th>
+										<th>Customer</th>
+										<th>Description</th>
+										<th>Strategist Name</th>
+										<th class="collapse-toggle-icon"></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr *ngFor="let e of engagements;" 
+										[routerLink]="['/dashboard',e.id, e.name]">
+										<td *ngIf="e.isTextShorten" [clamp]="1" title="{{ e.name }}">{{ e.name }}</td>
+										<td *ngIf="e.isTextShorten" [clamp]="1" title="{{ e.customer.name }}">{{ e.customer.name }}</td>
+										<td *ngIf="e.isTextShorten" [clamp]="1" title="{{ e.description }}">{{ e.description }}</td>
+										<td *ngIf="e.isTextShorten" [clamp]="1" title="{{ e.strategist.firstName }} {{ e.strategist.lastName }}">
+											{{ e.strategist.firstName }} {{ e.strategist.lastName }}
+										</td>
+										<td *ngIf="!e.isTextShorten">{{ e.name }}</td>
+										<td *ngIf="!e.isTextShorten">{{ e.customer.name }}</td>
+										<td *ngIf="!e.isTextShorten">{{ e.description }}</td>
+										<td *ngIf="!e.isTextShorten">
+											{{ e.strategist.firstName }} {{ e.strategist.lastName }}
+										</td>
+										<td class="collapse-toggle-icon" (click)="toggleShortenEngagementText(e.id)">
+											<i 
+												class="fa"
+												[class.fa-caret-down] = "e.isTextShorten"
+												[class.fa-caret-up] = "!e.isTextShorten"></i>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<ng-template #tableWithNoEng>
+							<div 
+								class="table-responsive" 
+								style="padding:0">
+								<table 
+									class="table table-bordered table-fixed table-engagements" 				
+									style="text-align:center; width:100%; table-layout:fixed;">
+									<thead>
+										<tr>
+											<th>Engagement Name</th>
+											<th>Customer</th>
+											<th>Description</th>
+											<th>Strategist Name</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td [colSpan]=4 style="text-align: center;">
+												You have no engagement. Please create new engagements.
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</ng-template>
+	
+					</div>
+				</div>
+			</div>
+		</div>
+		<div 
+			class="modal fade centered-modal" 
+			id="createEngagement" 
+			role="dialog" 
+			aria-labelledby="exampleModalCenterTitle" 
+			data-backdrop="static" 
+			data-keyboard="false" 
+			aria-hidden="true"
+			
+			style="z-index: 9999">
+			
+			<div class="modal-dialog modal-lg" role="document">
+				  <div class="modal-content">
+					<div class="modal-header">
+						<button 
+							type="button" 
+							class="close" 
+							data-dismiss="modal"
+							style=
+								"color: #ffffff !important;
+								opacity: 1 !important;">
+							<span aria-hidden="true">&times;</span>
+							<span class="sr-only">Close</span>
+						</button>
+						<h4 class="modal-title" id="myModalLabel">
+							Create Engagement
+						</h4>
+					</div>
+					<!-- modal body content comes from here-->
+					<div class="modal-body">
+						<div
+							id = "isError"
+							name = "isError"
+							class="alert alert-danger fade in alert-dismissible"
+							[ngStyle]="{ 'display' : errorMessage }"
+							*ngIf = "engagementErrors">
+							<a 
+								class="close" 
+								aria-label="close" 
+								title="close" 
+								(click)="displayToggle()">×
+							</a>
+							Please provide the required information for the indicated field(s).
+						</div>
+						<form 
+							class = "form-horizontal" 
+							id = "formNewEngagement" 
+							name = "formNewEngagement" 
+							#engagementData = "ngForm" 
+							(ngSubmit) = "createEngagement(engagementData.value)">
+							<div class="row">
+								<div class="col-md-6">	
+									<div class="form-group">
+										<label class="control-label col-md-4" for="name">Name*</label>
+										<div class="col-md-8">
+											<input 
+												type="text"
+												name="name" 
+												id="name" 
+												placeholder="Engagement Name" 
+												class="form-control"
+												[(ngModel)]="name"
+												[ngClass]=
+												"{	'form-invalid' : engagementErrors?.name, 
+														'form-valid' : !engagementErrors?.name 
+												}">
+												<div class="form-error-text" *ngIf = "engagementErrors?.name">
+													<span class="text text-danger">
+														{{engagementErrors.name}}
+													</span>
+												</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-md-4" for="customer">Customer*</label>
+										<div class="col-md-8"> 
+											<select
+												(change)="onChange()"
+												[(ngModel)] = "customerNameOther"
+												name="customerNameOther" 
+												class="form-control" 
+												id="customerNameOther"
+												title="{{ customerNameOther }}"
+												[ngClass]=
+													"{	'form-invalid' : engagementErrors?.customerNameOther, 
+														'form-valid' : !engagementErrors?.customerNameOther 
+												}">
+												<option [disabled]="disableCutomerDefaultField" [value]=" " title="Select Customer">
+													Select Customer
+												</option>
+												<option *ngFor="let c of customers" title="{{c.name}}">
+													{{c.name}}
+												</option>
+												<option>Other</option>
+											</select>
+											<div 
+												class="form-error-text" 
+												*ngIf = "engagementErrors?.customerNameOther">
+												<span class="text text-danger">
+													{{engagementErrors.customerNameOther}}
+												</span>
+											</div>
+											<input type="text" 
+												style="margin-top: 5px;"
+												[(ngModel)] = "customer"
+												name="customer"
+												title="{{ customer }}"
+												placeholder=""
+												class="form-control" 
+												id="customer"
+												[readonly]="disableCustomerField"
+												[ngClass]=
+													"{	'form-invalid' : engagementErrors?.customer, 
+														'form-valid' : !engagementErrors?.customer 
+												}">
+												<div 
+													class="form-error-text" 
+													*ngIf = "engagementErrors?.customer">
+													<span class="text text-danger">
+														{{engagementErrors.customer}}
+													</span>
+												</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label 
+											class="control-label col-md-4" 
+											for="description">
+											Description*
+										</label>
+										<div class="col-md-8"> 
+											<textarea 
+												[(ngModel)] = "description" 
+												name="description" 
+												class="form-control" 
+												id="description" 
+												rows="5"
+												[ngClass]=
+													"{ 'form-invalid' : engagementErrors?.description, 
+													'form-valid' : !engagementErrors?.description 
+												}">
+											</textarea>
+											<div 
+												class="form-error-text" 
+												*ngIf = "engagementErrors?.description">
+												<span class="text text-danger">
+													{{engagementErrors.description}}
+												</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="panel panel-default">
+										<div class="panel-heading" style="background-color: #6d6f71 !important">
+											<div class="row">
+												<div class="col-md-6">
+													<h4 class="panel-title">
+														Admin Information
+													</h4>	
+												</div>
+											</div>
+										</div>
+										<div id="collapse1" class="panel-collapse collapse in">
+											<div class="panel-body">
+												<div class="form-group">
+													<label 
+														class="control-label col-md-4" 
+														for="adminFirstName">
+														First Name*
+													</label>
+													<div class="col-md-8">
+														<input 
+															[(ngModel)] = "adminFirstName" 
+															name="adminFirstName" 
+															type="text" 
+															class="form-control"
+															id="adminFirstName" 
+															placeholder="First Name"
+															[ngClass]=
+																"{	'form-invalid' : engagementErrors?.adminFirstName, 
+																	'form-valid' : !engagementErrors?.adminFirstName 
+																}">
+															<div 
+																class="form-error-text" 
+																*ngIf = "engagementErrors?.adminFirstName" >
+																<span class="text text-danger">{{engagementErrors.adminFirstName}}</span>
+															</div>	
+													</div>
+												</div>
+												<div class="form-group">
+													<label 
+														class="control-label col-md-4" 
+														for="adminLastName">
+														Last Name*
+													</label>
+													<div class="col-md-8">
+														<input  
+															[(ngModel)] = "adminLastName" 
+															name="adminLastName"
+															type="text" 
+															class="form-control" 
+															id="adminLastName" 
+															placeholder="Last Name"
+															[ngClass]=
+																"{	'form-invalid' : engagementErrors?.adminLastName, 
+																	'form-valid' : !engagementErrors?.adminLastName 
+																}">
+															<div 
+																class="form-error-text" 
+																*ngIf = "engagementErrors?.adminLastName">
+																<span class="text text-danger">
+																	{{engagementErrors.adminLastName}}
+																</span>
+															</div>
+													</div>
+												</div>
+												<div class="form-group">
+													<label 
+														class="control-label col-md-4" 
+														for="adminEmail">
+														Email*
+													</label>
+													<div class="col-md-8">
+														<input 
+															[(ngModel)] = "adminEmail" 
+															name="adminEmail" 
+															type="text" 
+															class="form-control" 
+															id="adminEmail" 
+															placeholder="Email"
+															[ngClass]=
+																"{	'form-invalid' : engagementErrors?.adminEmail, 
+																	'form-valid' : !engagementErrors?.adminEmail 
+															}">
+															<div 
+																class="form-error-text" 
+																*ngIf = "engagementErrors?.adminEmail">
+																<span class="text text-danger">
+																	{{engagementErrors.adminEmail}}
+																</span>
+															</div>
+													</div>
+												</div>
+												<div class="form-group">
+													<label 
+														class="control-label col-md-4" 
+														for="adminPhone">
+														Phone*
+													</label>
+													<div class="col-md-8">
+														<input 
+															[(ngModel)] = "adminPhone"
+															name="adminPhone" 
+															type="text" 
+															class="form-control" 
+															id="adminPhone" 
+															placeholder="Phone"
+															[ngClass]=
+																"{	'form-invalid' : engagementErrors?.adminPhone, 
+																	'form-valid' : !engagementErrors?.adminPhone 
+																}">
+															<div 
+																class="form-error-text" 
+																*ngIf = "engagementErrors?.adminPhone">
+																<span class="text text-danger">
+																	{{engagementErrors.adminPhone}}
+																</span>
+															</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>	
+								<div class="col-md-6">
+									<div class="panel panel-default">
+										<div class="panel-heading" style="background-color: #6d6f71 !important">
+											<div class="row">
+												<div class="col-md-6">
+													<h4 class="panel-title">
+														Billing Information
+													</h4>	
+												</div>
+											</div>
+										</div>
+										<div id="collapse1" class="panel-collapse collapse in">
+											<div class="panel-body">
+												<div class="form-group">
+													<label 
+														class="control-label col-md-4" 
+														for="billingFirstName">
+														First Name*
+													</label>
+													<div class="col-md-8">
+														<input 
+														[(ngModel)] = "billingFirstName" 
+														name="billingFirstName" 
+														type="text" 
+														class="form-control"
+														id="billingFirstName" 
+														placeholder="First Name"
+														[ngClass]=
+															"{	'form-invalid' : engagementErrors?.billingFirstName, 
+																'form-valid' : !engagementErrors?.billingFirstName 
+															}">
+															<div 
+																class="form-error-text" 
+																*ngIf = "engagementErrors?.billingFirstName" >
+																<span class="text text-danger">
+																	{{engagementErrors.billingFirstName}}
+																</span>
+															</div>	
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="control-label col-md-4" for="billingLastName">Last Name*</label>
+												<div class="col-md-8">
+													<input  
+														[(ngModel)] = "billingLastName" 
+														name="billingLastName"
+														type="text" 
+														class="form-control" 
+														id="billingLastName" 
+														placeholder="Last Name"
+														[ngClass]=
+															"{	'form-invalid' : engagementErrors?.billingLastName, 
+																'form-valid' : !engagementErrors?.billingLastName 
+															}">
+															<div 
+																class="form-error-text" 
+																*ngIf = "engagementErrors?.billingLastName">
+																<span class="text text-danger">
+																	{{engagementErrors.billingLastName}}
+																</span>
+															</div>
+												</div>
+											</div>
+											<div class="form-group">
+												<label 
+													class="control-label col-md-4" 
+													for="billingEmail">
+													Email*
+												</label>
+												<div class="col-md-8">
+													<input 
+														[(ngModel)] = "billingEmail" 
+														name="billingEmail" 
+														type="text" 
+														class="form-control" 
+														id="billingEmail" 
+														placeholder="Email"
+														[ngClass]=
+															"{	'form-invalid' : engagementErrors?.billingEmail, 
+																'form-valid' : !engagementErrors?.billingEmail 
+															}">
+															<div 
+																class="form-error-text" 
+																*ngIf = "engagementErrors?.billingEmail">
+																<span class="text text-danger">
+																	{{engagementErrors.billingEmail}}
+																</span>
+															</div>
+												</div>
+											</div>
+											<div class="form-group">
+												<label 
+													class="control-label col-md-4" 
+													for="billingPhone">
+													Phone*
+												</label>
+												<div class="col-md-8">
+													<input 
+														[(ngModel)] = "billingPhone"
+														name="billingPhone" 
+														type="text" 
+														class="form-control" 
+														id="billingPhone" 
+														placeholder="Phone"
+														[ngClass]=
+															"{	'form-invalid' : engagementErrors?.billingPhone, 
+																'form-valid' : !engagementErrors?.billingPhone 
+															}">
+														<div 
+															class="form-error-text" 
+															*ngIf = "engagementErrors?.billingPhone">
+															<span class="text text-danger">
+																{{engagementErrors.billingPhone}}
+															</span>
+														</div>
+												</div>
+											</div>
+										</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row"></div>
+							<div class="row">
+								<div class="col-xs-12">
+									<div class="text-right">
+										<button type="button" id="cancel-btn-engagement" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+										<input type="submit" class="btn btn-primary" value = "Create">
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-12 text-center" *ngIf="engagements?.length > 0">
+			<ul class="pagination pagination-sm" style="margin-top: 5px;">
+				<li [ngClass]="{'disabled':page==0}">
+					<a 
+						(click)="setFirstPageIndex()">
+						<i class="fa fa-step-backward"></i>
+					</a>
+				</li>
+				<li [ngClass]="{'disabled':page==0}">
+					<a  (click)="setPreviousPageIndex(page)">
+						<i class="fa fa-backward"></i>
+					</a>
+				</li>
+				<li 
+					*ngFor="let p of pages; let i=index;" 
+					[ngClass]="{'active':page==p-1}">
+					<a (click)="setPageIndex(p-1)">{{p}}</a>
+				</li>
+				<li [ngClass]="{'disabled':page==pageNumber-1}">
+					<a  
+						(click)="setNextPageIndex()">
+						<i class="fa fa-forward"></i>
+					</a>
+				</li> 
+				<li [ngClass]="{'disabled':page==pageNumber-1}">
+					<a  (click)="setLastPageIndex()">
+						<i class="fa fa-step-forward"></i>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<app-footer></app-footer>
+
+
+	

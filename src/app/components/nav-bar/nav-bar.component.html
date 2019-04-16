@@ -1,0 +1,174 @@
+<nav class="navbar navbar-inverse">
+  <div class="container-navigation">
+    <div class="item" style="width: 10%;">
+      <ul class="nav navbar-nav navbar-left" *ngIf="sideNavShowHide()" >
+        <li style="text-align:center;">
+          <a (click)="toggleSideNav()"><i class="fa fa-bars" style="color: #ffffff;"></i></a>
+        </li>
+      </ul>
+
+    </div>
+    <div class="item" style="width: 70%;">
+      <img 
+        id="navbar-brand-logo-image"
+        [src]="navBarBrandLogo" 
+        alt="Logo"
+        title="Home"
+        (click)="home()"
+        [routerLink]="['/']">
+    </div>
+    <div class="item" style="width: 10%;">
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown" style="text-align:center;">
+          <a class="dropdown-toggle">
+            <span>
+              <i class="fa fa-user-circle" style="color: #ffffff;"></i>
+            </span>
+            <span id="username-display">{{ userName }}</span>
+            <span id="username-caret" class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+            <li *ngIf = "isNewUser"><a [routerLink]="['/profile']" title="Profile: {{ userName }}">Profile: {{ userName }}</a></li> 
+            <li *ngIf="isAdmin"><a [routerLink]="['/administrator']" title="Administrator">Administrator</a></li>
+            <li *ngIf="features?.oldBenchmarkLink == true"><a href="https://oldbenchmark.d3op.io/faces/login.xhtml" title="Old Benchmark">Old Benchmark</a></li>
+            <li><a (click)="logout()" title="Logout">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div 
+    id="home-icon-panel"
+    class="text-center">
+    <div id="container">
+      <div>
+      </div>
+      <div>
+        <a 
+          class="text-center" 
+          id="user-home-link">
+          <i 
+            class="fa fa-home fa-2x"
+            id="user-home-icon" 
+            [routerLink]="['/']" 
+            title="User Home"
+            (click)="goToUserHome()"></i>
+        </a>
+      </div>
+      <div>
+        <i 
+          class="fa fa-times pull-right"
+          style="float: right; color: #ffffff; font-size: 20px; padding: 5px; cursor: pointer;"
+          id="user-home-icon" 
+          (click)="toggleSideNav()">
+        </i>
+      </div>
+    </div>
+  </div>
+  <div id="sidenav" malihu-scrollbar [scrollbarOptions]="scrollbarOptions">
+    <div class="list-group panel" style="margin-top: 0px; cursor: pointer;">
+      <ng-container *ngFor="let navData of navigationData; let i = index;">
+        <a
+          (click)="engagementHeadingToggle(i, navigationData.length)"
+          class="list-group-item"
+          [(class)]="navData.engagementActiveStatus" 
+          data-toggle="collapse" 
+          data-parent="#MainMenu"
+          title="{{ navData.engagementName }}"
+          style="border-radius: 0; color: #ffffff">{{ navData.engagementName }}</a>
+        <div [(class)] = "navData.engagementMenuToggleStatus">
+          <a 
+            class="list-group-item"
+            (click)="setDashboardHeadingLinkActive(i, navigationData.length)"
+            [(class)]="navData.engagementDashboardHeadingStatus"
+            id="{{ navData.engagementId }}" 
+            data-toggle="collapse" 
+            title="Dashboard"
+            [routerLink]="['/dashboard', navData.engagementId, navData.engagementName]"
+            style="padding-left: 30px; border-top: 0; border-radius: 0;">
+            Dashboard
+          </a>
+          <a 
+            (click)="setTeamHeadingLinkActive(i, navigationData.length)"
+            class="list-group-item" 
+            [(class)]="navData.engagementTeamHeadingStatus"
+            data-toggle="collapse" 
+            title="Teams"
+            style="padding-left: 30px; border-top: 0; border-radius: 0;">
+              <span>
+                <i 
+                  class="fa" 
+                  [class.fa-caret-right]="navData.engagementTeamHeadingStatus == 'team-inactive'"
+                  [class.fa-caret-down]="navData.engagementTeamHeadingStatus == 'team-active'"></i> 
+                  Teams 
+                    <span *ngIf="navData.teams == null">- No teams</span>
+              </span>
+          </a>
+          <div style="max-height: 240px; overflow-y: auto">
+            <ng-container *ngFor="let lt of navData.teams; let j = index">
+              <div 
+                class="list-group-submenu"
+                [(class)]="navData.engagementTeamDivStatus">
+                  <a 
+                    *ngIf="j<5" 
+                    (click)="setCurrentTeamActive(i, j, navigationData.length)" 
+                    class="list-group-item"
+                    [(class)]="lt.teamSelectedStatus" 
+                    title="{{ lt.name }}"
+                    style="padding-left: 40px; border: 0; border-radius: 0;"
+                    [routerLink]="['/team', navData.engagementId, navData.engagementName, lt.id, lt.name]">
+                    - {{ lt.name }}
+                  </a>
+                  <a
+                    (click)="clickViewAll(i)"
+                    *ngIf="navData.teams.length > 5 && j==5"
+                    style="padding-left: 40px; border: 0; border-radius: 0;"
+                    [routerLink]="['/dashboard',navData.engagementId, navData.engagementName]">View all</a>
+                </div>  
+            </ng-container>
+            </div>
+                <a 
+                  (click)="setProductHeadingLinkActive(i, navigationData.length)"
+                  class="list-group-item" 
+                  [(class)]="navData.engagementProductHeadingStatus"
+                  data-toggle="collapse" 
+                  title="Products"
+                  style="padding-left: 30px; border-top: 0; border-radius: 0;">
+                  <span>
+                      <i 
+                      class="fa" 
+                      [class.fa-caret-right]="navData.engagementProductHeadingStatus === 'product-inactive'"
+                      [class.fa-caret-down]="navData.engagementProductHeadingStatus === 'product-active'"></i>  
+                      Products 
+                      <span *ngIf="navData.products == null">- No products</span>
+                    </span>
+                  </a>
+                <div style="max-height: 240px; overflow-y: auto">
+                  <ng-container *ngFor="let lp of navData.products; let j = index;">
+                    <div 
+                      class="list-group-submenu"
+                      [(class)]="navData.engagementProductDivStatus">
+                      <a *ngIf="j<5"
+                        (click)="setCurrentProductActive(i, j, navigationData.length)" 
+                        class="list-group-items"
+                        [(class)]="lp.productSelectedStatus"
+                        title="{{ lp.name }}"
+                        style="padding-left: 40px; border: 0; border-radius: 0;"
+                        [routerLink]="['/product', navData.engagementId, navData.engagementName, lp.id, lp.name]">
+                        - {{ lp.name }}
+                      </a>
+                      <a 
+                        (click)="clickViewAll(i)"
+                        *ngIf="navData.products.length > 5 && j==5"
+                        style="padding-left: 40px; border: 0; border-radius: 0;"
+                        [routerLink]="['/dashboard',navData.engagementId, navData.engagementName]">View all</a>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>  
+          </ng-container>
+        </div>
+      </div>
+    
+  </nav>
+  

@@ -1,0 +1,75 @@
+<nav 
+  class="navbar navbar-inverse" 
+  style="
+        position: fixed; 
+        width: 100%; 
+        top: 0; 
+        z-index: 9999; 
+        background-color: #4a4c56; 
+        border-radius: 0;"> 
+        <a class="navbar-brand" style="width: 0;">
+          <img 
+            id="navbar-brand-logo-image"
+            [src]="navBarBrandLogo" 
+            alt="Logo">
+        </a>  
+  
+    <ul class="nav navbar-nav navbar-right">
+    </ul>
+  
+</nav>
+<div id="wrapper">
+  <div class="container" style="margin-top: 80px;">
+
+    <form 
+    autocomplete="off"  
+    class = "form-horizontal" 
+    id = "formSecurity" 
+    name = "formSecurity"
+    #securityData = "ngForm"
+    (ngSubmit) = "validateQuestion(securityData.value)">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-12">
+                <h4 class="panel-title" style="padding: 5px;">
+                    Security Questions
+                </h4> 
+            </div>
+          </div>
+        </div>
+        <div id="collapse1" class="panel-collapse collapse in">
+          <div class="panel-body">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="control-label col-md-4" for="name">{{person.securityQuestion}}</label>
+                <div class="col-md-4">
+                  <input 
+                    type="text" 
+                    name="answer" 
+                    id="answer" 
+                    class="form-control"
+                    [(ngModel)]="answer" 
+                    [ngClass]=
+                    "{	'form-invalid' : securityError?.answer, 
+                          'form-valid' : !securityError?.answer
+                    }">
+                    <div class="form-error-text" *ngIf = "securityError?.answer">
+                      <span class="text text-danger">
+                        {{securityError.answer}}
+                      </span>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                  <input type="submit" class="btn btn-primary" value = "Submit">
+                </div>
+  
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<app-footer></app-footer>     

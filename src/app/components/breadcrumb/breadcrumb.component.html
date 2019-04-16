@@ -1,0 +1,166 @@
+<div class="col-md-12 breadcrumb-area" style="padding: 0;">
+  <ul class="breadcrumb">
+    <li *ngIf="profilePageLanded"
+      [routerLink]="['/profile']"
+      title="{{ profileTitle }}"
+      style="cursor: default">
+      {{ profileTitle }} 
+    </li>
+    <li *ngIf="administratorPageLanded"
+      [routerLink]="['/administrator']"
+      title="{{ administratorTitle }}"
+      style="cursor: default">
+      {{ administratorTitle }} 
+    </li>
+    <li 
+      [routerLink]="['/']" 
+      title="{{ userHome }}"> 
+        {{ userHome }} 
+    </li>
+    <li style="width: auto">&nbsp; {{ partitionSymbolEngagement }} &nbsp;</li>
+    <li 
+      [routerLink]="['/dashboard', engagementId, engagementNameTitle]"
+      title="{{ engagementNameTitle }}">
+      {{ engagementNameTitle }}
+    </li>
+    <li style="width: auto">&nbsp; {{ partitionSymbolTeamProduct }} &nbsp;</li>
+    <li
+      [routerLink]="['/team', engagementId, engagementNameTitle, teamId, teamNameTitle]"
+      title="{{ teamNameTitle }}">
+      {{ teamNameTitle }}
+    </li>
+    <li
+      [routerLink]="['/product', engagementId, engagementNameTitle, productId, productNameTitle]"
+      title="{{ productNameTitle }}">
+      {{ productNameTitle }} 
+    </li>
+  </ul>
+  <span [hidden]="legendsLink" style="float: right">
+      <ul class="breadcrumb">
+          <li data-toggle="modal" data-target="#modalLegneds">Legends</li>
+      </ul>
+  </span>
+</div>
+
+<div class="modal fade centered-modal" id="modalLegneds" role="dialog" style="z-index: 9999">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" style="color: #ffffff; opacity: 1;">&times;</button>
+          <h4 class="modal-title">Legends</h4>
+        </div>
+        <div class="modal-body">
+            <div class="panel panel-default">
+              <div class="panel-heading">Metrics</div>
+              <div class="panel-body" style="padding: 0;">
+                <table class="table table-bordered" style="text-align: center; margin-bottom: 0;">
+                  <thead>
+                    <tr style="height: 15px;">
+                      <th></th>
+                      <th style="text-align: center;">Worst</th>
+                      <th style="text-align: center;">Best</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th>Current Maturity (CM)</th>
+                      <td>1 / Tin</td>
+                      <td>5 / Platinum</td>
+                    </tr>
+                    <tr>
+                      <th>Target Maturity (TM)</th>
+                      <td>1 / Tin</td>
+                      <td>5 / Platinum</td>
+                    </tr>
+                    <tr>
+                      <th>Value to Next (VN)</th>
+                      <td>1 / Lowest</td>
+                      <td>5 / Highest</td>
+                    </tr>
+                    <tr>
+                      <th>Complexity to Next (CN)</th>
+                      <td>5 / Highest</td>
+                      <td>1 / Lowest</td>
+                      </tr>
+                    <tr>
+                      <th>Priority Order (PO)</th>
+                      <td>5 / Lowest</td>
+                      <td>1 / Highest</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading">Short Codes</div>
+              <div class="panel-body" style="padding: 0;">
+                  <table class="table table-bordered" style="text-align: left; margin-bottom: 0;">
+                      <tbody>
+                        <tr>
+                          <td>
+                            <b>CM:</b> Current Maturity
+                          </td>
+                          <td>
+                            <b>PR:</b> Priority Rationale
+                          </td>
+                          <td>
+                            <b>LC:</b> Lowest Complexity
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <b>TM:</b> Target Maturity
+                          </td>
+                          <td>
+                            <b>T:</b> Tin
+                          </td>
+                          <td>
+                              <b>LT:</b> Level-Set Team/Org
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <b>VN:</b> Value to Next Maturity
+                          </td>
+                          <td>
+                            <b>II:</b> Internal Initiative
+                          </td>
+                          <td>
+                            <b>DTM:</b> Distance to Target Maturity
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                              <b>CN:</b> Complexity to Next Maturity
+                          </td>
+                          <td>
+                            <b>VC:</b> Value vs Complexity
+                          </td>
+                          <td>
+                            <b>NAT:</b> No Action - Target Maturity Reached
+                          </td>
+                          </tr>
+                        <tr>
+                          <td>
+                            <b>PO:</b> Priority Order
+                          </td>
+                          <td>
+                            <b>HV:</b> Highest Value
+                          </td>
+                          <td>
+                            <b>NAO:</b>  No Action - Other
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+              </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" style="background-color: #dddddd;" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+

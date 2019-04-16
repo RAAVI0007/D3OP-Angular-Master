@@ -1,0 +1,858 @@
+<div class="container" style="min-height: 900px;">
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+              <div class="panel-title pull-left">
+                  Create Competencies
+                  <a data-toggle="modal" data-target="#createCompetency" (click)="setModelValuesDefault()">
+                    <span style="vertical-align:middle;cursor:pointer;">
+                      <i class="fa fa-plus-circle" title="Create new competency"></i>
+                    </span>
+                  </a>
+              </div>
+              <div class="panel-title pull-right">
+                <a 
+                  data-toggle="collapse" 
+                  data-parent="#accordion" 
+                  href="#view-competencies">
+                </a>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div id="view-competencies" class="panel-collapse collapse in">
+              <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <div class="form-group" style="width: 200px; margin-top: 15px; margin-right: 25px;">
+                          <select 
+                            class="form-control" 
+                            style="cursor: pointer;"
+                            id="competency-type"
+                            title="{{ selectAssessmentTitle }}"
+                            (change)="assessmentTypeChanged()"
+                            [(ngModel)] = "assessmentType">
+                            <option disabled selected value = "SELECT">Select</option>
+                            <option value="PRODUCT" title="Product Assessment">Product Assessment</option>
+                            <option value="TEAM" title="Team Assessment">Team Assessment</option>
+                          </select>
+                        </div>
+                    </div>
+                </div>
+              </div>
+              <div class="table-responsive" style="min-height: 400px;" *ngIf="competencies.length > 0; else tableWithNoCompetency">
+                <table 
+                  class="table table-bordered table-fixed table-assessment-config" 
+                  style="margin: 0 auto; margin-top: 0px; margin-bottom: 30px; width: 96%; table-layout:fixed;">
+                  <thead>
+                    <tr>
+                      <th style="cursor: pointer;" >
+                        <span (click)="sortDomain()">Domain <span><i [ngClass]="domainSortIcon"></i></span></span>
+                        <div style="max-width: 94px; cursor: pointer;" class="multiselect" ngbDropdown>
+                          <div class="selectbox" ngbDropdownToggle>
+                            <select class="form-control">
+                              <option>Domain</option>
+                            </select>
+                            <div class="overselect" title="Domain"></div>
+                          </div>
+                          <div ngbDropdownMenu id="checkboxes">
+                            <li style = "padding-left: 12px;padding-top: 6px;">
+                              <label title="Select All">
+                                <input  type="checkbox" [(ngModel)]="selectAllDomain" (change)="onSelectAllDomain($event)"> Select All
+                              </label>
+                            </li>
+                            <li *ngFor="let cd of competencyDomain" style = "padding-left: 12px;">
+                              <label 
+                                title="{{ cd.name }}"
+                                style="white-space: nowrap; 
+                                width: 122px; 
+                                overflow: hidden;
+                                text-overflow: ellipsis;">
+                                <input  type="checkbox" [(ngModel)]="cd.selected" (change)="onCheckboxChangeDomain(cd,$event)">  {{ cd.name }}
+                              </label>
+                            </li>
+                          </div>
+                        </div>
+                      </th>
+                      <th>Title
+                        <div style="max-width: 94px; cursor: pointer;" class="multiselect" ngbDropdown>
+                          <div class="selectbox" ngbDropdownToggle>
+                            <select class="form-control">
+                              <option>Title</option>
+                            </select>
+                            <div class="overselect" title="Title"></div>
+                          </div>
+                          <div ngbDropdownMenu id="checkboxes">
+                            <li style = "padding-left: 12px;padding-top: 6px;">
+                              <label title="Select All">
+                                <input  type="checkbox" [(ngModel)]="selectAllTitle" (change)="onSelectAllTitle($event)"> Select All
+                              </label>
+                            </li>
+                            <li *ngFor="let ct of competencyTitle" style = "padding-left: 12px;">
+                              <label 
+                                title="{{ ct.name }}"
+                                style="white-space: nowrap; 
+                                width: 122px; 
+                                overflow: hidden;
+                                text-overflow: ellipsis;">
+                                <input  type="checkbox" [(ngModel)]="ct.selected" (change)="onCheckboxChangeTitle(ct,$event)">  {{ ct.name }}
+                              </label>
+                            </li>
+                          </div>
+                        </div>
+                      </th>
+                      <th>Question</th>
+                      <th>Metrics</th>
+                      <th>Tin Value</th>
+                      <th>Bronze Value</th>
+                      <th>Silver Value</th>
+                      <th>Gold Value</th>
+                      <th>Platinum Value</th>
+                      <th class="collapse-toggle-icon"></th>
+                      <th class="modal-edit-icon"></th>
+                    </tr>   
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td 
+                        [colSpan]="10" 
+                        *ngIf="filteredItems.length === 0"
+                        style="text-align: center;">No records found with given criteria</td>
+                    </tr>
+                    <tr *ngFor="let competency of competencies | competencyDomain: selectedCompetencyDomain | competencyTitle: selectedCompetencyTitle;" #checkFilterDataLength>
+                      <td *ngIf= "competency.isTextShorten" [clamp]="3" title="{{ competency.domain }}">{{ competency.domain }}</td>
+                      <td *ngIf= "competency.isTextShorten" [clamp]="3" title="{{ competency.subject }}">{{ competency.subject }}</td>
+                      <td *ngIf= "competency.isTextShorten" [clamp]="3" title="{{ competency.question }}">{{ competency.question }}</td>
+                      <td *ngIf= "competency.isTextShorten" [clamp]="3" title="{{ competency.metric }}">{{ competency.metric }}</td>
+                      <td *ngIf= "competency.isTextShorten" [clamp]="3" title="{{ competency.tin }}">{{ competency.tin }}</td>
+                      <td *ngIf= "competency.isTextShorten" [clamp]="3" title="{{ competency.bronze }}">{{ competency.bronze }}</td>
+                      <td *ngIf= "competency.isTextShorten" [clamp]="3" title="{{ competency.silver }}">{{ competency.silver }}</td>
+                      <td *ngIf= "competency.isTextShorten" [clamp]="3" title="{{ competency.gold }}">{{ competency.gold }}</td>
+                      <td *ngIf= "competency.isTextShorten" [clamp]="3" title="{{ competency.platinum }}">{{ competency.platinum }}</td>
+      
+                      <td *ngIf= "!competency.isTextShorten">{{ competency.domain }}</td>
+                      <td *ngIf= "!competency.isTextShorten">{{ competency.subject }}</td>
+                      <td *ngIf= "!competency.isTextShorten">{{ competency.question }}</td>
+                      <td *ngIf= "!competency.isTextShorten">{{ competency.metric }}</td>
+                      <td *ngIf= "!competency.isTextShorten">{{ competency.tin }}</td>
+                      <td *ngIf= "!competency.isTextShorten">{{ competency.bronze }}</td>
+                      <td *ngIf= "!competency.isTextShorten">{{ competency.silver }}</td>
+                      <td *ngIf= "!competency.isTextShorten">{{ competency.gold }}</td>
+                      <td *ngIf= "!competency.isTextShorten">{{ competency.platinum }}</td>
+      
+                      <td
+                        (click)="toggleShortenAssessmentConfiguraionText(competency.id)" 
+                        class="collapse-toggle-icon">
+                        <i 
+                          style="cursor: pointer;"
+                          class="fa"
+                          [class.fa-caret-down] = "competency.isTextShorten"
+                          [class.fa-caret-up] = "!competency.isTextShorten"
+                        ></i>
+                      </td>
+                      <td class="modal-edit-icon" style="cursor: pointer;">
+                        <a data-toggle="modal" data-target="#editCompetency" (click)="getPracticeById(competency.id);">
+                          <i class="fa fa-pencil"></i>
+                        </a>  
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <ng-template #tableWithNoCompetency>
+                <table 
+                  class="table table-bordered table-fixed table-engagements" 
+                  style="margin: 0 auto; margin-top: 0px; margin-bottom: 30px; width: 96%;">
+                  <thead>
+                    <tr>
+                      <th>Domain</th>
+                      <th>Title</th>
+                      <th>Question</th>
+                      <th>Metrics</th>
+                      <th>Tin Value</th>
+                      <th>Bronze Value</th>
+                      <th>Silver Value</th>
+                      <th>Gold Value</th>
+                      <th>Platinum Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td [colSpan]=9 style="text-align: center;" *ngIf="assessmentType == 'SELECT'; else defaultText">Please select assessment type from dropdown to view competencies.</td>
+                      <ng-template #defaultText>
+                        <td [colSpan]=9 style="text-align: center;">You have no competency. Please create new competencies.</td>
+                      </ng-template>
+                    </tr>
+                  </tbody>
+                </table>
+              </ng-template>
+            </div>
+        </div>
+      </div>
+      <div 
+        class="modal fade" 
+        id="createCompetency" 
+        tabindex="-1" 
+        role="dialog" 
+        aria-labelledby="exampleModalCenterTitle" 
+        data-backdrop="static" 
+        data-keyboard="false" 
+        aria-hidden="true"
+        style="z-index: 9999;">
+      
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button 
+                type="button" 
+                class="close" 
+                style="color: #ffffff; opacity: 1;"
+                data-dismiss="modal">
+                <span aria-hidden="true">&times;</span>
+                <span class="sr-only">Close</span>
+              </button>
+              <h4 class="modal-title" id="myModalLabel">
+                Create Competency
+              </h4>
+            </div>
+            <div class="modal-body">
+              <div
+                id = "isCompetencyCreationError"
+                name = "isCompetencyCreationError"
+                class="alert alert-danger fade in alert-dismissible"
+                [ngStyle]="{ 'display' : displayCompetenciesError }"
+                *ngIf = "competenciesErrors">
+                <a 
+                  class="close" 
+                  aria-label="close" 
+                  title="close" 
+                  (click)="displaycompetenciesErrorToggle()">×
+                </a>
+                  Please provide the required information for the indicated field(s).
+              </div>
+              <form class="form-horizontal" (ngSubmit)="createNewCompetency()">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="panel panel-default">
+                      <div class="panel-heading" style="background-color: #6d6f71 !important;">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <h4 class="panel-title">
+                              Competency Details
+                            </h4>
+                          </div>
+                        </div>
+                      </div>
+                      <div id="collapse1" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label class="control-label col-md-4" for="assessment">Assessment*</label>
+                              <div class="col-md-8">
+                                <select 
+                                  class="form-control" 
+                                  id="assessment"
+                                  (change)="onAssessmentTypeSelection($event)"
+                                  name="type"
+                                  title="{{ assessmentTypeTitle }}"
+                                  [(ngModel)]="assessmentConfig.type"
+                                  [ngClass]=
+                                  "{
+                                    'form-invalid' : competenciesErrors?.assessment, 
+                                    'form-valid' : !competenciesErrors?.assessment
+                                  }">
+                                  <option disabled selected value = null>Select Assessment</option>
+                                  <option value="TEAM" title="TEAM">TEAM</option>
+                                  <option value="PRODUCT" title="PRODUCT">PRODUCT</option>
+                                </select>
+                                <div class="form-error-text" *ngIf="competenciesErrors?.assessment">
+                                  <span class="text text-danger">
+                                    {{ competenciesErrors.assessment }}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="control-label col-md-4" for="domain">Domain*</label>
+                              <div class="col-md-8">
+                                <select 
+                                  (change)="onDomainChange()"
+                                  class="form-control"
+                                  title="{{ selectedDomainTitle }}"
+                                  name="domainSelector"
+                                  [(ngModel)]="assessmentConfig.domainSelector"
+                                  id="domain"
+                                  [ngClass]=
+                                  "{
+                                    'form-invalid' : competenciesErrors?.domainSelector, 
+                                    'form-valid' : !competenciesErrors?.domainSelector
+                                  }">
+                                  <option disabled selected value = null>Select Domain</option>
+                                  <option *ngFor="let d of domains" title="{{ d }}">{{ d }}</option>
+                                  <option value="other">Other</option>
+                                </select>
+                                <div class="form-error-text" *ngIf = "competenciesErrors?.domainSelector">
+                                  <span class="text text-danger">
+                                      {{ competenciesErrors.domainSelector }}
+                                    </span>
+                                  </div>
+                                <input  
+                                  [readonly]="disableDomainField"
+                                  type="text" 
+                                  class="form-control" 
+                                  title="{{ assessmentConfig.domain }}"
+                                  [(ngModel)]="assessmentConfig.domain"
+                                  id="new-domain" 
+                                  name="newDomain"
+                                  [ngClass]=
+                                  "{
+                                    'form-invalid' : competenciesErrors?.domain, 
+                                    'form-valid' : !competenciesErrors?.domain
+                                  }">
+                                  <div class="form-error-text" *ngIf = "competenciesErrors?.domain">
+                                  <span class="text text-danger">
+                                      {{ competenciesErrors.domain }}
+                                    </span>
+                                  </div>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="control-label col-md-4" for="subject">Title*</label>
+                              <div class="col-md-8">
+                                <input 
+                                  placeholder="Title" 
+                                  type="text" 
+                                  class="form-control" 
+                                  name="subject"
+                                  [(ngModel)]="assessmentConfig.subject"
+                                  id="subject" 
+                                  [ngClass]=
+                                  "{
+                                    'form-invalid' : competenciesErrors?.subject, 
+                                    'form-valid' : !competenciesErrors?.subject
+                                  }">
+                                  <div class="form-error-text" *ngIf = "competenciesErrors?.subject">
+                                    <span class="text text-danger">
+                                      {{ competenciesErrors.subject }}
+                                    </span>
+                                  </div>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="control-label col-md-4" for="question">Question*</label>
+                              <div class="col-md-8">
+                                <textarea  
+                                  type="text" 
+                                  class="form-control"
+                                  name="question"
+                                  [(ngModel)]="assessmentConfig.question"
+                                  id="question"
+                                  name="question"
+                                  [ngClass]=
+                                  "{
+                                    'form-invalid' : competenciesErrors?.question, 
+                                    'form-valid' : !competenciesErrors?.question
+                                  }">
+                                </textarea>  
+                                <div class="form-error-text" *ngIf = "competenciesErrors?.question">
+                                  <span class="text text-danger">
+                                    {{ competenciesErrors.question }}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="control-label col-md-4" for="metric">Metrics*</label>
+                              <div class="col-md-8">
+                                <textarea  
+                                  type="text"
+                                  class="form-control"
+                                  name="metric"
+                                  [(ngModel)]="assessmentConfig.metric"
+                                  id="metric" 
+                                  name="metric"
+                                  [ngClass]=
+                                  "{
+                                    'form-invalid' : competenciesErrors?.metric, 
+                                    'form-valid' : !competenciesErrors?.metric
+                                  }">
+                                </textarea>
+                                <div class="form-error-text" *ngIf = "competenciesErrors?.metric">
+                                  <span class="text text-danger">
+                                    {{ competenciesErrors.metric }}
+                                  </span>
+                                </div>  
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="tin" class="control-label col-md-4">Tin*</label>
+                              <div class="col-md-8">
+                                <textarea
+                                  class="form-control"
+                                  name="tin"
+                                  [(ngModel)]="assessmentConfig.tin"
+                                  id="tin" 
+                                  name="tin"
+                                  [ngClass]=
+                                  "{
+                                    'form-invalid' : competenciesErrors?.tin, 
+                                    'form-valid' : !competenciesErrors?.tin
+                                  }">
+                                </textarea>
+                                <div class="form-error-text" *ngIf = "competenciesErrors?.tin">
+                                  <span class="text text-danger">
+                                    {{ competenciesErrors.tin }}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="silver" class="control-label col-md-4">Silver*</label>
+                              <div class="col-md-8">
+                                <textarea 
+                                  name="silver" 
+                                  id="silver"
+                                  class="form-control"
+                                  name="silver"
+                                  [(ngModel)]="assessmentConfig.silver"
+                                  [ngClass]=
+                                  "{
+                                    'form-invalid' : competenciesErrors?.silver, 
+                                    'form-valid' : !competenciesErrors?.silver
+                                  }">
+                                </textarea>
+                                <div class="form-error-text" *ngIf = "competenciesErrors?.silver">
+                                  <span class="text text-danger">
+                                    {{ competenciesErrors.silver }}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="bronze" class="control-label col-md-4">Bronze*</label>
+                              <div class="col-md-8">
+                                <textarea 
+                                  name="bronze" 
+                                  id="bronze"
+                                  class="form-control"
+                                  name="bronze"
+                                  [(ngModel)]="assessmentConfig.bronze"
+                                  [ngClass]=
+                                  "{
+                                    'form-invalid' : competenciesErrors?.bronze, 
+                                    'form-valid' : !competenciesErrors?.bronze
+                                  }">
+                                </textarea>
+                                <div class="form-error-text" *ngIf = "competenciesErrors?.bronze">
+                                  <span class="text text-danger">
+                                    {{ competenciesErrors.bronze }}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="gold" class="control-label col-md-4">Gold*</label>
+                              <div class="col-md-8">
+                                <textarea 
+                                  name="gold" 
+                                  id="gold"
+                                  class="form-control"
+                                  name="gold"
+                                  [(ngModel)]="assessmentConfig.gold"
+                                  [ngClass]=
+                                  "{
+                                    'form-invalid' : competenciesErrors?.gold, 
+                                    'form-valid' : !competenciesErrors?.gold
+                                  }">
+                                </textarea>
+                                <div class="form-error-text" *ngIf = "competenciesErrors?.gold">
+                                  <span class="text text-danger">
+                                    {{ competenciesErrors.gold }}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="platinum" class="control-label col-md-4">Platinum*</label>
+                              <div class="col-md-8">
+                                <textarea 
+                                  name="platinum" 
+                                  id="platinum"
+                                  class="form-control"
+                                  name="platinum"
+                                  [(ngModel)]="assessmentConfig.platinum"
+                                  [ngClass]=
+                                  "{
+                                    'form-invalid' : competenciesErrors?.platinum, 
+                                    'form-valid' : !competenciesErrors?.platinum
+                                  }">
+                                </textarea>
+                                <div class="form-error-text" *ngIf = "competenciesErrors?.platinum">
+                                  <span class="text text-danger">
+                                    {{ competenciesErrors.platinum }}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row"></div>
+                <br>
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="text-right">
+                      <button type="button" id="cancel-btn-competency-modal" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                      <input type="submit" class="btn btn-primary" value = "Create Competency">
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        
+        </div>  
+      
+      </div>
+      
+      <div 
+        class="modal fade" 
+        id="editCompetency"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalCenterTitle"
+        data-backdrop="static" 
+        data-keyboard="false" 
+        aria-hidden="true"
+        style="z-index: 9999;">
+        
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button 
+                type="button" 
+                class="close" 
+                data-dismiss="modal"
+                style="color: #ffffff; opacity: 1;">
+                <span aria-hidden="true">&times;</span>
+                <span class="sr-only">Close</span>
+              </button>
+              <h4 class="modal-title" id="myModalLabel">
+                Edit Competency
+              </h4>
+            </div>
+            <div class="modal-body">
+              <div
+                id = "isCompetencyCreationError"
+                name = "isCompetencyCreationError"
+                class="alert alert-danger fade in alert-dismissible"
+                [ngStyle]="{ 'display' : displayCompetenciesError }"
+                *ngIf = "competenciesErrors">
+                <a 
+                  class="close" 
+                  aria-label="close" 
+                  title="close" 
+                  (click)="displaycompetenciesErrorToggle()">×
+                </a>
+                  Please provide the required information for the indicated field(s).
+              </div>
+              <form class="form-horizontal" (ngSubmit)="editCompetency()">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="panel panel-default">
+                      <div class="panel-heading" style="background-color: #6d6f71 !important;">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <h4 class="panel-title">
+                              Competency Details
+                            </h4>
+                          </div>
+                        </div>
+                      </div>
+                      <div id="collapse1" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label class="control-label col-md-4" for="assessment">Assessment*</label>
+                              <div class="col-md-8">
+                                <select 
+                                  class="form-control" 
+                                  id="edit-panel-assessment"
+                                  name="type"
+                                  title="{{ assessmentConfig.type }}"
+                                  [(ngModel)]="assessmentConfig.type"
+                                  disabled
+                                  [(ngModel)]="assessmentConfig.type"
+                                  [ngClass]=
+                                  "{
+                                    'form-invalid' : competenciesErrors?.assessment, 
+                                    'form-valid' : !competenciesErrors?.assessment
+                                  }">
+                                  <option value="TEAM" title="TEAM">TEAM</option>
+                                  <option value="PRODUCT" title="PRODUCT">PRODUCT</option>
+                                </select>
+                                <div class="form-error-text" *ngIf="competenciesErrors?.assessment">
+                                  <span class="text text-danger">
+                                    {{ competenciesErrors.assessment }}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="control-label col-md-4" for="domain">Domain*</label>
+                              <div class="col-md-8">
+                                <select 
+                                  (change)="onDomainChange()"
+                                  class="form-control"
+                                  name="domainSelector"
+                                  title="{{ assessmentConfig.domainSelector }}"
+                                  [(ngModel)]="assessmentConfig.domainSelector"
+                                  id="edit-panel-domain"
+                                  [(ngModel)]="assessmentConfig.domainSelector"
+                                  [ngClass]=
+                                  "{
+                                    'form-invalid' : competenciesErrors?.domainSelector, 
+                                    'form-valid' : !competenciesErrors?.domainSelector
+                                  }">>
+                                  <option *ngFor="let d of domains" title="{{ d }}">{{ d }}</option>
+                                  <option value="other">Other</option>
+                                </select>
+                                <div class="form-error-text" *ngIf = "competenciesErrors?.domainSelector">
+                                  <span class="text text-danger">
+                                    {{ competenciesErrors.domainSelector }}
+                                  </span>
+                                </div>
+                                <input  
+                                  [readonly]="disableDomainField"
+                                  type="text" 
+                                  class="form-control" 
+                                  name="newDomain"
+                                  title="{{ assessmentConfig.domain }}"
+                                  [(ngModel)]="assessmentConfig.domain"
+                                  id="edit-panel-new-domain"
+                                  [ngClass]=
+                                  "{
+                                    'form-invalid' : competenciesErrors?.domain, 
+                                    'form-valid' : !competenciesErrors?.domain
+                                  }">
+                                  <div class="form-error-text" *ngIf = "competenciesErrors?.domain">
+                                    <span class="text text-danger">
+                                      {{ competenciesErrors.domain }}
+                                    </span>
+                                  </div>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="control-label col-md-4" for="subject">Title*</label>
+                              <div class="col-md-8">
+                                <input 
+                                  placeholder="Title" 
+                                  type="text" 
+                                  class="form-control" 
+                                  name="subject"
+                                  title="{{ assessmentConfig.subject }}"
+                                  [(ngModel)]="assessmentConfig.subject"
+                                  id="edit-panel-subject"
+                                  [ngClass]=
+                                  "{
+                                    'form-invalid' : competenciesErrors?.subject, 
+                                    'form-valid' : !competenciesErrors?.subject
+                                  }">
+                                  <div class="form-error-text" *ngIf = "competenciesErrors?.subject">
+                                    <span class="text text-danger">
+                                      {{ competenciesErrors.subject }}
+                                    </span>
+                                  </div>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="control-label col-md-4" for="question">Question*</label>
+                              <div class="col-md-8">
+                                <textarea  
+                                  type="text" 
+                                  class="form-control"
+                                  name="question"
+                                  [(ngModel)]="assessmentConfig.question"
+                                  title="{{ assessmentConfig.question }}"
+                                  id="edit-panel-question"
+                                  [ngClass]=
+                                  "{
+                                    'form-invalid' : competenciesErrors?.question, 
+                                    'form-valid' : !competenciesErrors?.question
+                                  }">
+                                </textarea>  
+                                <div class="form-error-text" *ngIf = "competenciesErrors?.question">
+                                  <span class="text text-danger">
+                                    {{ competenciesErrors.question }}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="control-label col-md-4" for="metric">Metrics*</label>
+                              <div class="col-md-8">
+                                <textarea  
+                                  type="text"
+                                  class="form-control"
+                                  name="metric"
+                                  title="{{ assessmentConfig.metric }}"
+                                  [(ngModel)]="assessmentConfig.metric"
+                                  id="edit-panel-metric" 
+                                  name="metric"
+                                  [ngClass]=
+                                  "{
+                                    'form-invalid' : competenciesErrors?.metric, 
+                                    'form-valid' : !competenciesErrors?.metric
+                                  }">
+                                </textarea>
+                                <div class="form-error-text" *ngIf = "competenciesErrors?.metric">
+                                  <span class="text text-danger">
+                                    {{ competenciesErrors.metric }}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="tin" class="control-label col-md-4">Tin*</label>
+                              <div class="col-md-8">
+                                <textarea
+                                  class="form-control"
+                                  name="tin"
+                                  title="{{ assessmentConfig.tin }}"
+                                  [(ngModel)]="assessmentConfig.tin"
+                                  id="edit-panel-tin" 
+                                  name="tin"
+                                  [ngClass]=
+                                  "{
+                                    'form-invalid' : competenciesErrors?.tin, 
+                                    'form-valid' : !competenciesErrors?.tin
+                                  }">
+                                </textarea>
+                                <div class="form-error-text" *ngIf = "competenciesErrors?.tin">
+                                  <span class="text text-danger">
+                                    {{ competenciesErrors.tin }}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="silver" class="control-label col-md-4">Silver*</label>
+                              <div class="col-md-8">
+                                <textarea 
+                                  name="silver" 
+                                  id="edit-panel-silver"
+                                  class="form-control"
+                                  name="silver"
+                                  title="{{ assessmentConfig.silver }}"
+                                  [(ngModel)]="assessmentConfig.silver"
+                                  [ngClass]=
+                                  "{
+                                    'form-invalid' : competenciesErrors?.silver, 
+                                    'form-valid' : !competenciesErrors?.silver
+                                  }">
+                                </textarea>
+                                <div class="form-error-text" *ngIf = "competenciesErrors?.silver">
+                                  <span class="text text-danger">
+                                    {{ competenciesErrors.silver }}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="bronze" class="control-label col-md-4">Bronze*</label>
+                              <div class="col-md-8">
+                                <textarea 
+                                  name="bronze" 
+                                  id="edit-panel-bronze"
+                                  class="form-control"
+                                  name="bronze"
+                                  title="{{ assessmentConfig.bronze }}"
+                                  [(ngModel)]="assessmentConfig.bronze"
+                                  [ngClass]=
+                                  "{
+                                    'form-invalid' : competenciesErrors?.bronze, 
+                                    'form-valid' : !competenciesErrors?.bronze
+                                  }">
+                                </textarea>
+                                <div class="form-error-text" *ngIf = "competenciesErrors?.bronze">
+                                  <span class="text text-danger">
+                                    {{ competenciesErrors.bronze }}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="gold" class="control-label col-md-4">Gold*</label>
+                              <div class="col-md-8">
+                                <textarea 
+                                  name="gold" 
+                                  id="edit-panel-gold"
+                                  class="form-control"
+                                  name="gold"
+                                  title="{{ assessmentConfig.gold }}"
+                                  [(ngModel)]="assessmentConfig.gold"
+                                  [ngClass]=
+                                  "{
+                                    'form-invalid' : competenciesErrors?.gold, 
+                                    'form-valid' : !competenciesErrors?.gold
+                                  }">
+                                </textarea>
+                                <div class="form-error-text" *ngIf = "competenciesErrors?.gold">
+                                  <span class="text text-danger">
+                                    {{ competenciesErrors.gold }}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="platinum" class="control-label col-md-4">Platinum*</label>
+                              <div class="col-md-8">
+                                <textarea 
+                                  name="platinum" 
+                                  id="edit-panel-platinum"
+                                  class="form-control"
+                                  name="platinum"
+                                  title="{{ assessmentConfig.platinum }}"
+                                  [(ngModel)]="assessmentConfig.platinum"
+                                  [ngClass]=
+                                  "{
+                                    'form-invalid' : competenciesErrors?.platinum, 
+                                    'form-valid' : !competenciesErrors?.platinum
+                                  }">
+                                </textarea>
+                                <div class="form-error-text" *ngIf = "competenciesErrors?.platinum">
+                                  <span class="text text-danger">
+                                    {{ competenciesErrors.platinum }}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row"></div>
+                <br>
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="text-right">
+                      <button type="button" id="cancel-btn-edit-competency-modal" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                      <input type="submit" class="btn btn-primary" value = "Save">
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+</div>

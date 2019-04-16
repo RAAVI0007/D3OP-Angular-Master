@@ -1,0 +1,299 @@
+<app-session-timeout></app-session-timeout>
+<app-nav-bar
+  [userName]="userName">
+</app-nav-bar>
+<div id="wrapper">
+  <div class="container" style="margin-top:80px; cursor: default !important;">
+    <app-breadcrumb
+      [profileTitle]="profileTitle"
+      [legendsLink]="legendsLink"
+      [profilePageLanded] = "profilePageLanded">
+    </app-breadcrumb>
+  </div><br>
+  <div class="container" style="min-height: 900px;">
+    <form 
+    class = "form-horizontal" 
+    id = "formProfile" 
+    name = "formProfile"
+    #profileData = "ngForm"
+    (ngSubmit) = "updateProfile(profileData.value)">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-12"> 
+                <h4 class="panel-title" style="padding: 5px;">
+                    User Details
+                </h4> 
+            </div>
+          </div>
+        </div>
+        <div id="collapse1" class="panel-collapse collapse in">
+          <div class="panel-body">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="control-label col-md-4" for="userFirstName">First Name</label>
+                      <div class="col-md-8">
+                          <input 
+                            type="text" 
+                            name="userFirstName" 
+                            id="userFirstName" 
+                            class="form-control"
+                            [ngModel]="userDetails?.firstName"
+                            title="{{ userDetails?.firstName }}"
+                            readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="control-label col-md-4" for="userEmail">Email</label>
+                      <div class="col-md-8">
+                        <input 
+                          type="text" 
+                          name="userEmail" 
+                          id="userEmail" 
+                          class="form-control"
+                          [ngModel]="userDetails?.email"
+                          title="{{ userDetails?.email }}"
+                          readonly>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="control-label col-md-4" for="userLastName">Last Name</label>
+                        <div class="col-md-8">
+                          <input 
+                            type="text" 
+                            name="userLastName" 
+                            id="userLastName" 
+                            class="form-control"
+                            [ngModel]="userDetails?.lastName"
+                            title="{{ userDetails?.lastName }}"
+                            readonly>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="control-label col-md-4" for="userUserName">Username</label>
+                            <div class="col-md-8">
+                              <input 
+                                type="text" 
+                                name="userUserName" 
+                                id="userUserName" 
+                                class="form-control"
+                                [ngModel]="userDetails?.username"
+                                title="{{ userDetails?.username }}"
+                                readonly>
+                            </div>
+                          </div>
+                    </div>
+                
+          </div>
+        </div>
+    </div> 
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="row">
+          <div class="col-md-12">
+              <h4 class="panel-title" style="padding: 5px;">
+                  Password
+              </h4> 
+          </div>
+        </div>
+      </div>
+      <div id="collapse1" class="panel-collapse collapse in">
+        
+            <div class="panel-body">
+                <div
+                  id = "isPasswordError"
+                  name = "isPasswordError"
+                  class="alert alert-danger fade in alert-dismissible"
+                  [ngStyle]="{ 'display' : errorPasswordMessage }"
+                  *ngIf = "profileErrors?.passwords">
+                <a 
+                  class="close" 
+                  aria-label="close" 
+                  title="close" 
+                  (click)="displayPasswordToggle()">×
+                </a>
+                    {{profileErrors.passwords}}
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="control-label col-md-4" for="newPassword">New Password</label>
+                    <div class="col-md-8">
+                        <input 
+                          (ngModelChange)="onChange()"
+                          type="password" 
+                          name="newPassword" 
+                          id="newPassword" 
+                          class="form-control"
+                          [(ngModel)]="newPassword"
+                          [ngClass]=
+                          "{	'form-invalid' : profileErrors?.newPassword  || profileErrors?.passwords, 
+                            'form-valid' : !profileErrors?.newPassword 
+                        }"
+                          placeholder="Enter new password">
+                          <div class="form-error-text" *ngIf = "profileErrors?.newPassword">
+                              <span class="text text-danger">
+                                {{profileErrors.newPassword}}
+                              </span>
+                            </div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-md-4" for="confirmPassword">Confirm Password</label>
+                    <div class="col-md-8">
+                      <input 
+                        (ngModelChange)="onChange()"
+                        type="password" 
+                        name="confirmPassword" 
+                        id="confirmPassword" 
+                        class="form-control"
+                        [ngClass]=
+                        "{	'form-invalid' : profileErrors?.confirmPassword || profileErrors?.passwords,  
+                          'form-valid' : !profileErrors?.confirmPassword 
+                      }"
+                        [(ngModel)]="confirmPassword"
+                        placeholder="Enter confirm password">
+                        <div class="form-error-text" *ngIf = "profileErrors?.confirmPassword">
+                          <span class="text text-danger">
+                            {{profileErrors.confirmPassword}}
+                          </span>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <b>Set a new password for future logins.</b>
+                  <br/><br/>
+                  <b>Length:</b> minimum of 8 characters, maximum of 15 characters<br>
+                  <b>Characters Allowed:</b> alphanumeric and ! @ # $ % (is cap-sensitive)<br>
+                  <b>Must Contain:</b> minimum of 1 letter and 1 number
+              </div>
+        
+      </div>
+  </div> 
+  
+  
+  
+    </div>
+    <div class="panel panel-default">
+    <div class="panel-heading">
+      <div class="row">
+        <div class="col-md-12">
+            <h4 class="panel-title" style="padding: 5px;">
+                Security Question
+            </h4> 
+        </div>
+      </div>
+    </div>
+    <div id="collapse1" class="panel-collapse collapse in">
+      
+          <div class="panel-body">
+              <div
+                id = "isSecurityError"
+                name = "isSecurityError"
+                class="alert alert-danger fade in alert-dismissible"
+                [ngStyle]="{ 'display' : errorSecurityMessage }"
+                *ngIf = "profileErrors?.security">
+              <a 
+                class="close" 
+                aria-label="close" 
+                title="close" 
+                (click)="displaySecurityToggle()">×
+              </a>
+                  {{profileErrors.security}}
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="control-label col-md-4" for="securityQuestion">Security Question</label>
+                  <div class="col-md-8"> 
+                    <select
+                      value = " "
+                      [(ngModel)] = "securityQuestion"
+                      name="securityQuestion" 
+                      (ngModelChange)="onChange()"
+                      class="form-control"
+                      [ngClass]=
+                        "{	'form-invalid' : profileErrors?.securityQuestion || profileErrors?.security, 
+                          'form-valid' : !profileErrors?.securityQuestion 
+                      }" 
+                      id="securityQuestion">
+                      <option disabled selected value = " ">
+                        Select a Question
+                      </option>
+                      <option *ngFor="let s of securityQuestions"  value = "{{s.id}}">
+                          {{s.question}}
+                       </option>
+                      </select>
+                      <div class="form-error-text" *ngIf = "profileErrors?.securityQuestion">
+                          <span class="text text-danger">
+                            {{profileErrors.securityQuestion}}
+                          </span>
+                        </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-4" for="answer">Answer</label>
+                  <div class="col-md-8">
+                    <input 
+                      type="text" 
+                      name="answer" 
+                      id="answer" 
+                      (ngModelChange)="onChange()"
+                      [ngClass]=
+                      "{	'form-invalid' : profileErrors?.answer || profileErrors?.security, 
+                        'form-valid' : !profileErrors?.answer 
+                    }"
+                      class="form-control"
+                      [(ngModel)]="answer">
+  
+                      <div class="form-error-text" *ngIf = "profileErrors?.answer">
+                          <span class="text text-danger">
+                            {{profileErrors.answer}}
+                          </span>
+                        </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <b>Select a security question, and provide your answer to the question.</b><br><br>
+                <b>Length:</b> minimum of 1 and maximum of 16 characters<br/>
+                <b>Characters Allowed:</b> alphanumeric and ! @ # $ % (is NOT cap-sensitive)<br/>
+  
+                </div>
+            </div>
+      
+    </div>
+    </div> 
+    <div class = "col-md-12" >
+        <div class="col-md-4" style="text-align: right;">
+          <label class="control-label text-right"> Current Password </label>
+        </div>
+        <div class="col-md-4">
+            <input 
+            (ngModelChange)="onChange()"
+            type="password" 
+            name="currentPassword" 
+            id="currentPassword" 
+            class="form-control"
+            [ngClass]=
+              "{	'form-invalid' : profileErrors?.currentPassword, 
+                'form-valid' : !profileErrors?.currentPassword 
+            }"
+            [(ngModel)]="currentPassword">
+            <div class="form-error-text" *ngIf = "profileErrors?.currentPassword">
+              <span class="text text-danger">
+                {{profileErrors.currentPassword}}
+              </span>
+            </div>
+        </div>
+        <div class="col-md-1" style="margin-bottom: 20px;">
+            <input type="submit" class="btn btn-primary" value = "Update" [disabled]="(!newPassword || !confirmPassword || !currentPassword) && (!answer || !currentPassword)">
+        </div>
+    </div>
+  
+  </form>
+  </div>
+</div>
+<app-footer></app-footer>
+

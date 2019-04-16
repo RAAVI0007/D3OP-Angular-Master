@@ -1,0 +1,286 @@
+.form-invalid:focus {
+    border-color: #dc3545;
+    outline: 0;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(220,53,69,.6);
+ }
+
+
+.form-valid:focus {
+    border-color: #66afe9;
+    outline: 0;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6);
+}
+
+
+ .table-linked-teams > thead > tr > th {
+    text-align: center;
+    width: 355px;
+    max-width: 355px;
+    border: 1px solid #ddd !important;
+}
+
+.table-linked-teams > tbody > tr > td {
+    cursor: pointer;
+    width: 355px;
+    max-width: 355px;
+    border: 1px solid #ddd !important;
+    word-break: break-word !important;
+    text-align: left;
+}
+
+.table-linked-teams > thead > tr > .collapse-toggle-icon {
+    width: 17px !important; 
+    border-top: 1px solid #ffffff !important;
+    border-bottom: 1px solid #ffffff !important;
+    border-right: 1px solid #ffffff !important;
+    background-color: #ffffff;
+}
+
+.table-linked-teams > tbody > tr > .collapse-toggle-icon {
+    width: 17px !important; 
+    border-top: 1px solid #ffffff !important;
+    border-bottom: 1px solid #ffffff !important;
+    border-right: 1px solid #ffffff !important;
+    background-color: #ffffff;
+}
+
+.table-competency > thead > tr > th {
+    text-align: center;
+    border: 1px solid #ddd !important;
+    width: 122.6px;
+    min-width: 122.6px;
+    max-width: 122.6px;
+}
+
+.table-competency > tbody > tr > td {
+    cursor: pointer;
+    word-break: break-word !important;
+    border: 1px solid #ddd !important;
+    text-align: left;
+    width: 122.6px;
+    min-width: 122.6px;
+    max-width: 122.6px;
+}
+
+.table-domain > thead > tr > th {
+    text-align: center;
+    border: 1px solid #ddd !important;
+    width: 568.5px;
+    min-width: 568.5px;
+    max-width: 568.5px;
+}
+
+.table-domain > tbody > tr > td {
+    cursor: pointer;
+    word-break: break-word !important;
+    border: 1px solid #ddd !important;
+    text-align: center;
+    width: 568.5px;
+    min-width: 568.5px;
+    max-width: 568.5px;
+}
+
+.table-competency > thead > tr > .collapse-toggle-icon {
+    width: 25px !important; 
+    border-top: 1px solid #ffffff !important;
+    border-bottom: 1px solid #ffffff !important;
+    border-right: 1px solid #ffffff !important;
+    background-color: #ffffff;
+}
+
+.table-competency > tbody > tr > .collapse-toggle-icon {
+    width: 25px !important; 
+    border-top: 1px solid #ffffff !important;
+    border-bottom: 1px solid #ffffff !important;
+    border-right: 1px solid #ffffff !important;
+    background-color: #ffffff;
+}
+
+.table > tbody > tr > td {
+    vertical-align: middle;
+}
+
+.competency-table-drop-down {
+    width: 110px;
+    min-width: 110px;
+    max-width: 110px;
+}
+
+.table-linked-teams > tbody > tr > td {
+    vertical-align: middle;
+}
+
+.input-group{
+    display: inline;
+}
+
+.form-invalid {
+    border: #dc3545 1px solid;
+}
+
+.form-error-text {
+    font-size: 14px;
+}
+
+label {
+    padding-right: 0 !important;
+}
+
+/* .centered {
+    position: fixed;
+    left: 50%;
+    top: 16%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    opacity: 1;
+    animation: fade 1s linear;
+} */
+
+@keyframes fade {
+    0%{ opacity: 0 }
+    100% { opacity: 1 }
+}
+
+.show-alert {
+    display:block;
+}
+
+th {
+    cursor:pointer;
+ }
+
+td.practice-table {
+    white-space: pre-line;
+}
+
+.table-bordered {
+    border: 0;
+}
+
+.table-bordered>tbody>tr>td {
+    border: 0;
+}
+
+.metrics-without-value {
+    color: #cccccc;
+    font-style: italic;
+}
+
+.metrics-with-value {
+    color: #ffffff;
+    font-style: normal;
+}
+
+table thead .sorting,
+table thead .sorting_asc,
+table thead .sorting_desc,
+table thead .sorting_asc_disabled,
+table thead .sorting_desc_disabled {
+    background-repeat: no-repeat;
+    background-position: center right;
+}
+
+table thead .sorting {
+    position: relative;
+}
+
+table thead .sorting:after {
+    content: "\f0dc";  /* this is your text. You can also use UTF-8 character codes as I do here */
+    font-family: FontAwesome;
+    cursor: pointer;
+}
+
+table thead .sorting_asc:after {
+    content: "\f0de";  /* this is your text. You can also use UTF-8 character codes as I do here */
+    font-family: FontAwesome;
+    cursor: pointer;
+}
+
+table thead .sorting_desc:after {
+    content: "\f0dd";  /* this is your text. You can also use UTF-8 character codes as I do here */
+    font-family: FontAwesome;
+    cursor: pointer;
+}
+
+.c-btn {
+   font-size: 12px !important;
+}
+
+.dropdown-list ul li {
+    padding-left: 10px !important;
+}
+
+.columnWidth {
+    width:12%;
+}
+
+.multiselect {
+    width: 200px;
+ }
+ 
+ .selectbox {
+    position: relative;
+ }
+ 
+ .selectbox select {
+    width: 100%;
+    font-weight: bold;
+ }
+ 
+ .overselect {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+ }
+ 
+ .checkboxes {
+    display: none;
+    border: 1px solid gray;
+    position: fixed;
+    z-index: 99999;
+    background: #ffffff;
+    width: 200px;
+ }
+ 
+ .checkboxes label {
+    display: block;
+ }
+ 
+ li {
+    list-style-type: none;
+    text-align: left;
+ }
+
+ .assess-content tr td {
+    cursor: default;
+}
+
+.assess-input-data tr td {
+    cursor: default !important;
+}
+
+#product-details-tab > a, #assess-tab > a, #reports-tab > a {
+    padding: 12px !important;
+}
+
+.checkboxes {
+    color: #000000;
+}
+
+.assess-content > tbody > tr > td {
+    background-color: #ffffff !important;
+}
+
+.assess-input-data > tbody > tr > td {
+    background-color: #ffffff !important;
+}
+
+#create-assessment-assess-tab {
+    color: #e61c38;
+}
+
+.nav-tabs>li.active>a {
+    font-weight: bold;
+}
